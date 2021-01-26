@@ -24,7 +24,7 @@
         <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">Boolpress</a>
         <ul class="navbar-nav px-3 ml-auto">
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('guests.home') }}">
+                <a class="nav-link" href="{{ route('homepage') }}">
                     Visita il sito
                 </a>
             </li>

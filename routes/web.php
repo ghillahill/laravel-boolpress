@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', 'HomeController@index')->name('homepage');
+Route::get('/posts', 'PostController@index')->name('posts.home');
 
 Auth::routes(['register' => false]);
 
