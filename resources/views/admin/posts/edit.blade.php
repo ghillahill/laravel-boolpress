@@ -19,7 +19,7 @@
                 </div>
                 <div class="form-group">
                     <label>Descrizione</label>
-                    <textarea name="content" class="form-control" rows="10" placeholder="Inserire Descrizione..." required>{{ $post->content }}</textarea>
+                    <textarea name="description" class="form-control" rows="10" placeholder="Inserire Descrizione..." required>{{ $post->description }}</textarea>
                 </div>
                 <div class="form-group">
                     <button type="submit" class="btn btn-success">
