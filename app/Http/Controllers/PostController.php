@@ -13,4 +13,13 @@ class PostController extends Controller
         ];
         return view('guests.posts.home', $data);
     }
+
+    public function show($slug) {
+        $post = Post::where('slug', $slug)->first();
+        if(!$post) {
+            abort(404);
+        }
+        $data = ['post' => $post];
+        return view('guests.posts.show', $data);
+    }
 }
