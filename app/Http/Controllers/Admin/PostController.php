@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use App\Post;
 
 class PostController extends Controller
@@ -29,6 +30,7 @@ class PostController extends Controller
     public function create()
     {
         //
+        return view('admin.posts.create');
     }
 
     /**
@@ -40,6 +42,24 @@ class PostController extends Controller
     public function store(Request $request)
     {
         //
+        $form_data = $request->all();
+        $new_post_object = new Post();
+        $new_post_object->fill($form_data);
+        $slug = Str::slug($new_post_object->title);
+        $new_post_object->date_of_post = $faker->date();
+        //Salvo slug su variabile
+        $slug_default = $slug;
+        $post_found = Post::where('slug', $slug)->first();
+        $counter = 1;
+        //Ciclo finchè un nuovo post è stato trovato e associo a ogni slug il titolo del post dividendo ogni parola con un trattino.
+        while($post_found) {
+            $slug = $slug_default . '-' . $counter;
+            $counter++;
+            $post_found = Post::where('slug', $slug)->first();
+        }
+        $new_post_object->slug = $slug;
+        $new_post_object->save();
+        return redirect()->route('admin.posts.index');
     }
 
     /**
@@ -48,9 +68,13 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Post $post)
     {
         //
+        if(!$post) {
+            abort(404);
+        }
+        return view('admin.posts.show', ['post' => $post]);
     }
 
     /**
@@ -59,9 +83,13 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Post $post)
     {
         //
+        if(!$post) {
+            abort(404);
+        }
+        return view('admin.posts.edit', ['post' => $post]);
     }
 
     /**
@@ -71,9 +99,30 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Post $post)
     {
         //
+        $form_data = $request->all();
+
+        if($form_data['title'] != $post->title) {
+            $slug = Str::slug($form_data['title']);
+            //Salvo slug su variabile
+            $slug_default = $slug;
+            // verifico che lo slug non esista nel database
+            $post_found = Post::where('slug', $slug)->first();
+            $counter = 1;
+            //Ciclo finchè un nuovo post è stato trovato e associo a ogni slug il titolo del post dividendo ogni parola con un trattino.
+            while($post_found) {
+                $slug = $slug_default . '-' . $counter;
+                $counter++;
+                $post_found = Post::where('slug', $slug)->first();
+            }
+            //Assegno slug a Post
+            $form_data['slug'] = $slug;
+        }
+        $post->update($form_data);
+        //Eseguo redirect su pagina Admin Home
+        return redirect()->route('admin.posts.index');
     }
 
     /**
@@ -82,8 +131,10 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Post $post)
     {
         //
+        $post->delete();
+        return redirect()->route('admin.posts.index');
     }
 }
