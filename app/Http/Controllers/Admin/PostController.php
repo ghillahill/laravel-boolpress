@@ -88,11 +88,13 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
-        //
-        if(!$post) {
-            abort(404);
-        }
-        return view('admin.posts.edit', ['post' => $post]);
+        //passo dati tabella categories per poterci accedere nella fase edit
+        $data = [
+            'post' => $post,
+            'categories' => Category::all()
+        ];
+
+        return view('admin.posts.edit', $data);
     }
 
     /**

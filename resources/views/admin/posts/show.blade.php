@@ -17,6 +17,8 @@
                 <dd>{{ $post->slug }}</dd>
                 <dt>Descrizione</dt>
                 <dd>{{ $post->description }}</dd>
+                <dt>Categoria</dt>
+                <dd>{{ $post->category ? $post->category->name : '-' }}</dd>
             </dl>
             <a href="{{ route('admin.posts.edit', ['post' => $post->id]) }}"
                 class="btn btn-warning">

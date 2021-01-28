@@ -22,6 +22,17 @@
                     <textarea name="description" class="form-control" rows="10" placeholder="Inserire Descrizione..." required>{{ $post->description }}</textarea>
                 </div>
                 <div class="form-group">
+                    <label>Categoria</label>
+                    <select class="form-control" name="category_id">
+                        <option value="">-Seleziona Categoria-</option>
+                        @foreach ($categories as $category)
+                            <option value="{{ $category->id }}" {{ $category->id == $post->category_id ? 'selected=selected' : '' }}>
+                                {{ $category->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="form-group">
                     <button type="submit" class="btn btn-success">
                         Salva Post
                     </button>
