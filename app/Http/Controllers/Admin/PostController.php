@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use App\Category;
 use App\Post;
 
 class PostController extends Controller
@@ -29,8 +30,11 @@ class PostController extends Controller
      */
     public function create()
     {
-        //
-        return view('admin.posts.create');
+        //passo dati tabella categories su funzione create.
+        $data = [
+            'categories' => Category::all()
+        ];
+        return view('admin.posts.create', $data);
     }
 
     /**
@@ -46,7 +50,6 @@ class PostController extends Controller
         $new_post_object = new Post();
         $new_post_object->fill($form_data);
         $slug = Str::slug($new_post_object->title);
-        $new_post_object->date_of_post = $faker->date();
         //Salvo slug su variabile
         $slug_default = $slug;
         $post_found = Post::where('slug', $slug)->first();
