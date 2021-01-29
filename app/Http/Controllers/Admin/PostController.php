@@ -144,7 +144,8 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        //
+        //Svuoto array per asssicurarmi di non eliminare anche gli eventuali tags
+        $post->tags()->sync([]);
         $post->delete();
         return redirect()->route('admin.posts.index');
     }
