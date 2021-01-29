@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Category;
 use App\Post;
+use App\Tag;
 
 class PostController extends Controller
 {
@@ -32,7 +33,8 @@ class PostController extends Controller
     {
         //passo dati tabella categories su funzione create.
         $data = [
-            'categories' => Category::all()
+            'categories' => Category::all(),
+            'tags' => Tag::all()
         ];
         return view('admin.posts.create', $data);
     }
@@ -62,6 +64,8 @@ class PostController extends Controller
         }
         $new_post_object->slug = $slug;
         $new_post_object->save();
+        //Sync dei tag a un post
+        $new_post_object->tags()->sync($form_data['tags']);
         return redirect()->route('admin.posts.index');
     }
 
@@ -91,7 +95,8 @@ class PostController extends Controller
         //passo dati tabella categories per poterci accedere nella fase edit
         $data = [
             'post' => $post,
-            'categories' => Category::all()
+            'categories' => Category::all(),
+            'tags' => Tag::all()
         ];
 
         return view('admin.posts.edit', $data);
@@ -126,6 +131,7 @@ class PostController extends Controller
             $form_data['slug'] = $slug;
         }
         $post->update($form_data);
+        $post->tags()->sync($form_data['tags']);
         //Eseguo redirect su pagina Admin Home
         return redirect()->route('admin.posts.index');
     }
