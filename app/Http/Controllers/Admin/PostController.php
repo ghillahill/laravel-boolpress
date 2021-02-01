@@ -48,6 +48,12 @@ class PostController extends Controller
     public function store(Request $request)
     {
         //
+        $request->validate([
+            'title' => 'required|max:50',
+            'description' => 'required',
+            'category_id' => 'nullable|exists:categories,id',
+            'tags' => 'exists:tags,id'
+        ]);
         $form_data = $request->all();
         $new_post_object = new Post();
         $new_post_object->fill($form_data);
@@ -64,8 +70,10 @@ class PostController extends Controller
         }
         $new_post_object->slug = $slug;
         $new_post_object->save();
-        //Sync dei tag a un post
-        $new_post_object->tags()->sync($form_data['tags']);
+        if(array_key_exists('tags', $form_data)) {
+            // aggiungo i tag al post
+            $new_post_object->tags()->sync($form_data['tags']);
+        }
         return redirect()->route('admin.posts.index');
     }
 
