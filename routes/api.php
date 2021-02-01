@@ -14,4 +14,5 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/posts','Api\PostController@index');
+//Associo middleware alla Route
+Route::post('/posts', 'Api\PostController@index')->middleware('api_token_checker');
