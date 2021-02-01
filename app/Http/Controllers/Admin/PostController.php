@@ -120,6 +120,13 @@ class PostController extends Controller
     public function update(Request $request, Post $post)
     {
         //
+        $request->validate([
+            'title' => 'required|max:255',
+            'description' => 'required',
+            'category_id' => 'nullable|exists:categories,id',
+            'tags' => 'exists:tags,id'
+        ]);
+
         $form_data = $request->all();
 
         if($form_data['title'] != $post->title) {
@@ -139,7 +146,10 @@ class PostController extends Controller
             $form_data['slug'] = $slug;
         }
         $post->update($form_data);
-        $post->tags()->sync($form_data['tags']);
+        if(array_key_exists('tags', $form_data)) {
+            // aggiungo i tag al post
+            $post->tags()->sync($form_data['tags']);
+        }
         //Eseguo redirect su pagina Admin Home
         return redirect()->route('admin.posts.index');
     }
